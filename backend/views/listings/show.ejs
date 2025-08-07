@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Airbnb</title>
+</head>
+<body>
+    <h3>Listing Details:</h3>
+    <li><%= listDetails.title %></li>
+    <li><%= listDetails.description %></li>
+    <li>&#8377;<%= listDetails.price.toLocaleString("en-IN") %></li>
+    <li><%= listDetails.location %></li>
+    <li><%= listDetails.country %></li>
+    <br/>
+    <a href="/listings/<%= listDetails._id %>/edit">Edit your listing</a>
+    <br/><br/>
+    <form method="POST" action="/listings/<%= listDetails._id %>?_method=DELETE">
+        <button>Delete</button>
+    </form>
+</body>
+</html>
