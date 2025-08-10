@@ -1,16 +1,29 @@
 <%- layout("/layouts/biolerplate") %>
 <body>
-    <h3>Listing Details:</h3>
-    <li><%= listDetails.title %></li>
-    <li><%= listDetails.description %></li>
-    <li>&#8377;<%= listDetails.price.toLocaleString("en-IN") %></li>
-    <li><%= listDetails.location %></li>
-    <li><%= listDetails.country %></li>
+     <div class="row">
+         <div class="col-8 offset-3 mt-3">
+             <h3>Listing Details:</h3>
+         </div>
+    <div class="card col-6 offset-3 show-card">
+         <img src="<%= listDetails.image %>" class="card-img-top show-img" alt="...">
+        <div class="card-body">
+            <p class="card-text">
+                <b><%= listDetails.title %></b><br>
+                <%= listDetails.description %><br>
+                &#8377;<%= listDetails.price.toLocaleString("en-IN") %><br>
+                <%= listDetails.location %><br>
+                <%= listDetails.country %><br>
+            </p>
+        </div>
+    </div>
     <br/>
-    <a href="/listings/<%= listDetails._id %>/edit">Edit your listing</a>
-    <br/><br/>
-    <form method="POST" action="/listings/<%= listDetails._id %>?_method=DELETE">
-        <button>Delete</button>
-    </form>
+    <div class="btns">
+            <a href="/listings/<%= listDetails._id %>/edit" class="btn btn-dark offset-3 add-btn">Edit</a>
+   
+            <form method="POST" action="/listings/<%= listDetails._id %>?_method=DELETE">
+                <button class="btn btn-dark offset-5 add-btn">Delete</button>
+            </form>
+    </div>
+    </div>
 </body>
 </html>

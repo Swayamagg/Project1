@@ -17,7 +17,11 @@ async function main() {
 
 const initDB=async()=>{
     await Listing.deleteMany({});
-    await Listing.insertMany(initData.data);
+    const listings = initData.data.map(listing => ({
+        ...listing,
+        image: listing.image.url
+    }));
+    await Listing.insertMany(listings);
     console.log("data saved");
 }
 initDB();

@@ -25,7 +25,7 @@ async function main() {
 }
 
 app.get("/",(req,res)=>{
-    res.send("root");
+    res.redirect("/listings")
 })
 
 // app.get("/testListing",async(req,res)=>{
