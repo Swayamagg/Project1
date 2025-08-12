@@ -5,6 +5,10 @@ const Listing=require("./models/listing.js");
 const path=require("path");
 const methodOverride=require("method-override");
 const engine=require("ejs-mate");
+const wrapAsync=require("./utils/wrapAsync.js");
+const ExpressError=require("./utils/ExpressError.js");
+const { listingSchema } = require("./app.js");
+
 
 app.set("view engine","ejs");
 app.set("views",path.join(__dirname,"views"));
@@ -22,6 +26,16 @@ main()
 });
 async function main() {
     await mongoose.connect("mongodb://127.0.0.1:27017/airbnb");
+}
+
+const validateListing=(req,res,next)=>{
+    let {error}=listingSchema.validate(req.body);
+    if(error){
+        let errmsg=error.details.map((el)=>el.message).join(",");
+        throw new ExpressError(400,errmsg);
+    }else{
+        next();
+    }
 }
 
 app.get("/",(req,res)=>{
@@ -56,7 +70,7 @@ app.get("/listings/:id",async(req,res)=>{
     let {id}=req.params;
     const listDetails=await Listing.findById(id);
     res.render("listings/show.ejs",{listDetails});
-})
+});
 //create route
 app.post("/listings",async (req,res)=>{
     const newlisting=new Listing(req.body.listing);
@@ -66,11 +80,11 @@ app.post("/listings",async (req,res)=>{
 });
 
 //EDIT Route
-app.get("/listings/:id/edit",async(req,res)=>{
+app.get("/listings/:id/edit",wrapAsync(async(req,res)=>{
     let {id}=req.params;
     let listing=await Listing.findById(id);
     res.render("listings/edit.ejs",{listing});
-})
+}));
 //UPDATE Route
 app.put("/listings/:id",async(req,res)=>{
       let {id}=req.params;
@@ -83,6 +97,14 @@ app.delete("/listings/:id",async(req,res)=>{
     let deletedList=await Listing.findByIdAndDelete(id);
     console.log(deletedList);
     res.redirect("/listings");
+});   
+// app.all("*",(req,res,next)=>{
+//     next(new ExpressError(404,"Page Not Found"));
+// });
+app.use((err,req,res,next)=>{
+let{statusCode=500,message="Something went wrong"}=err;
+res.status(statusCode).render("error.ejs",{err});
+// res.status(statusCode).send(message);
 })
 
 app.listen(8080,()=>{
