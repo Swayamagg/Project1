@@ -6,9 +6,12 @@ const methodOverride=require("method-override");
 const engine=require("ejs-mate");
 const session=require("express-session");
 const flash=require("connect-flash");
-
-const listings=require("./router/listing.js");
-const reviews=require("./router/review.js")
+const passport=require("passport");
+const localStrategy=require("passport-local");
+const listingsRouter=require("./router/listing.js");
+const reviewsRouter=require("./router/review.js");
+const User=require("./models/user.js");
+const userRouter=require("./router/user.js");
 
 app.set("view engine","ejs");
 app.set("views",path.join(__dirname,"views"));
@@ -40,14 +43,22 @@ const sessionOptions={
 app.use(session(sessionOptions));
 
 app.use(flash());
+
+app.use(passport.initialize());
+app.use(passport.session());
+passport.use(new localStrategy(User.authenticate()));
+passport.serializeUser(User.serializeUser());
+passport.deserializeUser(User.deserializeUser());
+
 app.use((req,res,next)=>{
     res.locals.success=req.flash("success");
     res.locals.error=req.flash("error");
     next();
 });
 
-app.use("/listings",listings);
-app.use("/listings/:id/reviews",reviews);
+app.use("/listings",listingsRouter);
+app.use("/listings/:id/reviews",reviewsRouter);
+app.use("/",userRouter);
 
 app.get("/",(req,res)=>{
     res.redirect("/listings")
