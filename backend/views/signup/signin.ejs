@@ -1,17 +1,12 @@
-<%- layout("/layouts/biolerplate.ejs") %>
+<%- layout('/layouts/biolerplate.ejs') %>
 
 <div class="row col-6 mt-3">
         <div class="col-8 offset-8">
-             <h2>Sign up </h2>
-            <form action="/signup" method="POST" class="needs-validation" novalidate>
+             <h2>Login</h2>
+            <form action="/login" method="POST" class="needs-validation" novalidate>
                 <div class="mb-3">
                   <label for="username" class="form-label">Username</label>
                   <input name="username" id="username" type="text" class="form-control" required>
-                  <div class="valid-feedback">Looks Good!</div>
-                </div>
-                <div class="mb-3">
-                  <label for="email" class="form-label">Email</label>
-                  <input name="email" id="email" type="email" class="form-control" required>
                   <div class="valid-feedback">Looks Good!</div>
                 </div>
                 <div class="mb-3">
