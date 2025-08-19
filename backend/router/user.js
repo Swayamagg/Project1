@@ -15,8 +15,13 @@ router.post("/signup",wrapAsync(async(req,res)=>{
     const newUser=new User({username,email});
     const registerUser=await User.register(newUser,password);
     console.log(registerUser);
-    req.flash("success","User registered");
-    res.redirect("/listings");
+    req.login(registerUser,(err)=>{
+        if(err){
+            return next(err);
+        }
+        req.flash("success","User registered");
+        res.redirect("/listings");
+    });
     }catch(e){
         req.flash("error",e.message);
         res.redirect("/signup");
@@ -29,6 +34,17 @@ router.get("/login",(req,res)=>{
 router.post("/login",passport.authenticate("local",{failureRedirect:"/login",failureFlash:true}),(req,res)=>{
     req.flash("success","Welcome Back To Airbnb");
 res.redirect("/listings");
+})
+
+
+router.get("/logout",(req,res,next)=>{
+    req.logOut((err)=>{
+       if(err){
+        return next(err);
+       }
+       req.flash("success","you logged out");
+       res.redirect("/listings");
+    })
 })
 
 module.exports=router;
