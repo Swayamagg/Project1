@@ -1,3 +1,8 @@
+if(process.env.NODE_ENV !="production"){
+    require("dotenv").config();
+}
+
+const dbuser=process.env.ATLAS_USER;
 const express=require("express");
 const app=express();
 const mongoose=require("mongoose");
@@ -5,6 +10,7 @@ const path=require("path");
 const methodOverride=require("method-override");
 const engine=require("ejs-mate");
 const session=require("express-session");
+const mongoStore=require("connect-mongo");
 const flash=require("connect-flash");
 const passport=require("passport");
 const localStrategy=require("passport-local");
@@ -12,6 +18,9 @@ const listingsRouter=require("./router/listing.js");
 const reviewsRouter=require("./router/review.js");
 const User=require("./models/user.js");
 const userRouter=require("./router/user.js");
+const { error } = require("console");
+
+
 
 app.set("view engine","ejs");
 app.set("views",path.join(__dirname,"views"));
@@ -28,10 +37,23 @@ main()
     console.log(err);
 });
 async function main() {
-    await mongoose.connect("mongodb://127.0.0.1:27017/airbnb");
+    await mongoose.connect(dbuser);
 }
+
+const store=mongoStore.create({
+    mongoUrl:dbuser,
+    crypto:{
+        secret:process.env.SECRET,
+    },
+    touchAfter:24*3600,
+});
+
+store.on("error",()=>{
+    console.log("error on atlas",err);
+})
 const sessionOptions={
-    secret:"mysecret",
+    store,
+    secret:process.env.SECRET,
     resave:false,
     saveUninitialized:true,
     cookie:{

@@ -19,7 +19,7 @@ const initDB=async()=>{
     await Listing.deleteMany({});
     const listings = initData.data.map(listing => ({
         ...listing,
-        image: listing.image.url,
+        image: listing.image,
         owner:"68a2ff2ccc53de9cd459bc19"
     }));
     await Listing.insertMany(listings);
